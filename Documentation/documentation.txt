@@ -1,0 +1,1154 @@
+
+
+
+Author: Elly E. (Dev)
+Started on: 26.01.2026
+
+
+Table of Content
+1. Project Overview
+2. Prerequisites
+3. Installation
+4. Dependencies
+5. Configuration
+6. Project Structure
+7. Usage
+8. API Reference
+9. Troubleshoot
+10.Contributing
+11.Developer's Notes
+
+
+
+
+
+
+
+1. ✧･ﾟ: *✧･ﾟ:* PROJECT OVERVIEW ✧･ﾟ: *✧･ﾟ:*
+
+ ✦ • •  N2U Application Overview ✦ • •
+
+ The N2U App is a member rewards mobile application that provides voucher management, digital wallet functionality, transaction tracking,
+ and notification support to enhance user engagement and system transparency.
+
+ ✦ • • Core Modules & Key Features ✦ • •
+
+
+    ✧ Voucher Management
+
+       ⋆｡°✩ Display active, used, and expired vouchers
+
+       ⋆｡°✩ Voucher redemption using member points
+
+       ⋆｡°✩ Voucher code copy functionality for checkout usage
+
+
+    ✧ Wallet Management
+
+       ⋆｡°✩ Real-time wallet balance display
+
+       ⋆｡°✩ Support for multiple wallet types (e.g. Dine-in Wallet, Cash Wallet)
+
+
+    ✧ Top-Up
+
+       ⋆｡°✩ Submit wallet top-up requests
+
+       ⋆｡°✩ Top-up requests remain pending until approved
+
+       ⋆｡°✩ Wallet balance updates upon approval
+
+       ⋆｡°✩ User notification on top-up status changes
+
+
+    ✧ Withdrawal
+
+       ⋆｡°✩ Submit wallet withdrawal requests
+
+       ⋆｡°✩ Withdrawal requests processed after approval
+
+       ⋆｡°✩ Funds deducted from cash wallet upon approval
+
+       ⋆｡°✩ User notification on withdrawal status changes
+
+
+     ✧ Wallet Transaction History
+
+       ⋆｡°✩ View transaction records for:
+
+           ☆彡 Top-ups
+
+           ☆彡 Withdrawals
+
+           ☆彡 Wallet usage
+
+           ☆彡 Chronological transaction listing for tracking and auditing
+
+
+      ✧ Order History
+
+       ⋆｡°✩ View past orders and order details
+
+       ⋆｡°✩ Track voucher usage per order
+
+
+      ✧ Notifications
+
+        ⋆｡°✩ Receive system, transactional, and announcement notifications
+
+        ⋆｡°✩ Unread notification count tracking
+
+        ⋆｡°✩ Notification status management (read / unread)
+
+        ⋆｡°✩ Local storage support for notification persistence
+
+
+       ✧ Member Account
+
+         ⋆｡°✩ Secure authentication and session handling
+
+         ⋆｡°✩ Member profile information display
+
+
+✦ • • Tech Stack ✦ • •
+
+     ✧ Framework: Flutter
+
+     ✧ State Management:
+
+            1️⃣ setState() – Widget / UI State
+
+                ⋆｡°✩ Handles local UI updates, like:
+
+                ⋆｡°✩ Active tab selection (activeTab)
+
+                ⋆｡°✩ Loading indicators
+
+                ⋆｡°✩ Temporary form input changes
+
+                ⋆｡°✩ List updates after user actions (mark read, delete, refresh)
+
+                ⋆｡°✩ Short-lived state that resets when leaving the widget
+
+
+            2️⃣ Provider – Shared / Global State
+
+                ⋆｡°✩ Manages app-wide data, such as:
+
+                ⋆｡°✩ Auth / user session
+
+                ⋆｡°✩ Language / localization
+
+                ⋆｡°✩ Unread notification counts
+
+                ⋆｡°✩ Allows multiple screens to read/update the same state
+
+
+            3️⃣ Local Persistence (SQLite)
+
+                ⋆｡°✩ Notifications stored in SQLite (NotificationDatabase)
+
+                ⋆｡°✩ DB acts as source of truth for:
+
+                ⋆｡°✩ Unread/read status
+
+                ⋆｡°✩ Notification history
+
+                ⋆｡°✩ UI reflects DB changes for offline access and consistency
+
+
+            4️⃣ Remote State (REST API)
+
+                ⋆｡°✩ App interacts with REST endpoints for:
+
+                ⋆｡°✩ Vouchers
+
+                ⋆｡°✩ Wallet balances, top-ups, withdrawals
+
+                ⋆｡°✩ Orders / order history
+
+                ⋆｡°✩Member profile
+
+            Flow:
+
+                ⋆｡°✩ REST API → Response → setState / Provider → UI
+
+
+            No heavy caching layer, relies on controlled fetch + refresh
+
+
+     ✧ Backend: REST API
+
+
+
+
+
+2. ✧･ﾟ: *✧･ﾟ:* PREREQUISITES ✧･ﾟ: *✧･ﾟ:*
+
+
+ ✦ • •  Before you begin, ensure you have:
+
+ ✧ Flutter SDK (version 3.0.0 or higher) [https://docs.flutter.dev/install]
+ ✧ Dart SDK (version 3.0.o0 or higher) [https://dart.dev/get-dart]
+ ✧ IDE: Android Studio [https://developer.android.com/studio]
+ ✧ Platform SDK:
+    -Android SDK (Android SDK)
+
+ ✦ • •  Check your installation:
+
+ ✧ At the root project terminal (example directory or whatever directory you place your project on):
+
+PS C:\Users\Admin\Desktop\ws_app> flutter --version
+PS C:\Users\Admin\Desktop\ws_app> flutter doctor
+PS C:\Users\Admin\Desktop\ws_app> dart --version
+
+ ✦ • •  Verify Flutter setups:
+
+ ✧ Run 'flutter doctor' and ensure all checkmarks are green.
+
+
+
+
+
+3. ✧･ﾟ: *✧･ﾟ:* INSTALLATION ✧･ﾟ: *✧･ﾟ:*
+
+ ✦ • •  Ensure the following tools are installed on your system:
+
+     ✧ Flutter SDK (stable channel) https://docs.flutter.dev/install
+
+     ✧ Dart SDK (included with Flutter) https://dart.dev/get-dart
+
+     ✧ Android Studio / VS Code https://developer.android.com/studio
+
+
+ ✦ • •  Flutter & Dart plugins installed
+
+     ✧ Android SDK (for Android builds)
+
+     ✧ Xcode (for iOS builds, macOS only)
+
+
+ ✦ • •  Project Setup
+
+     ✧ Clone the repository:
+
+     ✧ git clone <repository-url>
+
+
+ ✦ • •  Navigate to the project directory:
+
+     ✧ cd n2u-app
+
+
+ ✦ • •  Install project dependencies:
+
+     ✧ flutter pub get
+
+     ✧ Environment Configuration
+
+     ✧ Configure API base URLs and environment variables as required
+
+     ✧ Ensure REST API endpoints are accessible
+
+     ✧ Verify notification services (e.g. OneSignal) configuration
+
+     ✧ Ensure local database (SQLite) initialization is enabled
+
+     ✧ Run the Application
+
+
+     ✦ • •  Android
+
+        ✧ flutter run
+
+
+     ✦ • •  iOS
+
+        ✧ flutter run
+
+
+✦ • • (Requires Xcode and valid iOS setup)
+
+⋆｡°✩ Build (Optional)
+
+⋆｡°✩ Android APK
+
+⋆｡°✩ flutter build apk
+
+
+✦ • • Android App Bundle
+
+flutter build appbundle
+
+
+✦ • • iOS
+
+⋆｡°✩ flutter build ios
+
+       ✦ • •  Notes
+
+            ✧ Ensure a device or emulator is running before executing the app
+
+             ✧ Network connectivity is required for REST API features
+
+             ✧ Notifications require proper platform permissions
+
+
+
+
+
+4. ✧･ﾟ: *✧･ﾟ:* DEPENDENCIES ✧･ﾟ: *✧･ﾟ:*
+
+✦ • • Compulsory download:
+
+  ⋆｡°✩ flutter_intl_phone_field: ^0.0.7
+  ⋆｡°✩ flutter_secure_storage: ^10.0.0
+  ⋆｡°✩ shared_preferences: ^2.5.4
+  ⋆｡°✩ qr_code_scanner_plus: ^2.0.14
+  ⋆｡°✩ cached_network_image: ^3.4.1
+  ⋆｡°✩ flutter_riverpod: ^3.1.0
+  ⋆｡°✩ image_picker: ^1.2.1
+  ⋆｡°✩ flutter_html: ^3.0.0
+  ⋆｡°✩ qr_flutter: ^4.1.0
+  ⋆｡°✩ onesignal_flutter: ^5.3.5
+  ⋆｡°✩ permission_handler: ^12.0.1
+  ⋆｡°✩ flutter_local_notifications: ^19.5.0
+  ⋆｡°✩ mobile_scanner: ^7.1.4
+  ⋆｡°✩ intl_phone_field: ^3.2.0
+  ⋆｡°✩ easy_localization: ^3.0.8
+  ⋆｡°✩ intl: ^0.20.2
+  ⋆｡°✩ buttons_tabbar: ^1.3.15
+  ⋆｡°✩ tutorial_coach_mark: ^1.3.3
+  ⋆｡°✩ awesome_snackbar_content: ^0.1.8
+
+
+✦ • • Optional download:
+
+ ⋆｡°✩ google_fonts: ^6.3.3
+ ⋆｡°✩ pin_code_fields: ^8.0.1
+ ⋆｡°✩ webview_flutter: ^4.13.0
+ ⋆｡°✩ dotted_line: ^3.2.3
+ ⋆｡°✩ coupon_uikit: ^0.2.1
+ ⋆｡°✩ dotted_border: ^3.1.0
+ ⋆｡°✩ audioplayers: ^6.5.1
+ ⋆｡°✩ vibration: ^3.1.5
+ ⋆｡°✩ firebase_core: ^4.3.0
+
+
+
+
+5. ✧･ﾟ: *✧･ﾟ:* CONFIGURATION ✧･ﾟ: *✧･ﾟ:*
+
+✦ • • Configuration
+
+    a. Environment Settings
+
+        ⋆｡°✩ Configure the REST API base URL in the application configuration file
+
+        ⋆｡°✩ Ensure correct environment is used (e.g. development, staging, production)
+
+        ⋆｡°✩ Update endpoints according to the target environment
+
+
+    b. API Configuration
+
+        ⋆｡°✩ Verify REST API endpoints for:
+
+        ⋆｡°✩ Authentication
+
+        ⋆｡°✩ Vouchers
+
+        ⋆｡°✩ Wallet (Top-Up, Withdrawal, Transactions)
+
+        ⋆｡°✩ Orders
+
+        ⋆｡°✩ Member profile
+
+        ⋆｡°✩ Ensure required request headers (e.g. authorization tokens) are included
+
+        ⋆｡°✩ Handle API response and error states appropriately
+
+
+    c. Notification Configuration
+
+        ⋆｡°✩ Configure notification service (e.g. OneSignal):
+
+        ⋆｡°✩ App ID setup for Android and iOS
+
+        ⋆｡°✩ Enable notification permissions
+
+        ⋆｡°✩ Ensure notification listeners are initialized at app startup
+
+        ⋆｡°✩ Support unread count tracking and notification persistence
+
+
+    d. Local Database Configuration
+
+        ⋆｡°✩ Initialize SQLite database on app launch
+
+        ⋆｡°✩ Configure tables for notification storage
+
+        ⋆｡°✩ Handle database migrations if schema changes occur
+
+
+    e. Localization
+
+        ⋆｡°✩ Configure supported languages (e.g. English, Chinese, Malay)
+
+        ⋆｡°✩ Ensure translation files (.json) are added and registered
+
+        ⋆｡°✩ Use .tr() for localized strings throughout the UI
+
+    f. Build Configuration
+
+        ⋆｡°✩ Configure Android:
+
+        ⋆｡°✩ Application ID
+
+        ⋆｡°✩ Minimum & target SDK versions
+
+
+    ✦ • • Configure iOS:
+
+        ⋆｡°✩ Bundle identifier
+
+        ⋆｡°✩ Deployment target
+
+        ⋆｡°✩ Ensure signing configurations are properly set for release builds
+
+
+    ✦ • • Notes
+
+        ⋆｡°✩ Configuration changes may require app restart
+
+        ⋆｡°✩ Ensure sensitive keys are not committed to version control
+
+        ⋆｡°✩ Use environment-specific values where applicable
+
+
+6. ✧･ﾟ: *✧･ﾟ:* PROJECT STRUCTURE ✧･ﾟ: *✧･ﾟ:*
+
+
+    lib
+    |
+    |-const/
+    |   |-button_style.dart
+    |   |-constant.dart
+    |   |-global.dart
+    |   |-text_style.dart
+    |   |-controller/
+    |       |-auth_storage.dart
+    |       |-main_api.dart
+    |       |-signup_datamodel.dart
+    |       |-voucher_datamodel.dart
+    |
+    |-notification/
+    |   |-notification.dart
+    |   |-notification_details.dart
+    |
+    |-profile/
+    |   |-change_password.dart
+    |   |-order_history.dart
+    |   |-point_history.dart
+    |   |-profile.dart
+    |   |-referral_page.dart
+    |   |-request_top_up.dart
+    |   |-request_withdrawal.dart
+    |   |-subscription.dart
+    |   |-top_up.dart
+    |   |-user_acc.dart
+    |   |-withdraw.dart
+    |
+    |-settings/
+    |   |-language.dart
+    |
+    |-signup_login/
+    |   |-code_verify.dart
+    |   |-code_verify_password.dart
+    |   |-forgot_password.dart
+    |   |-log_in.dart
+    |   |-reset_password.dart
+    |   |-sign_up.dart
+    |   |-tab_default.dart
+    |
+    |-voucher/
+    |   |-my_voucher.dart
+    |   |-n2u_voucher.dart
+    |   |-voucher.dart
+    |   |-voucher_details.dart
+    |   |-type/
+    |       |-active.dart
+    |       |-expired.dart
+    |       |-redeemed.dart
+    |
+    |-wallet/
+    |   |-wallet_details.dart
+    |   |-wallet_transaction.dart
+    |
+    |-firebase_options.dart
+    |-main.dart
+    |-multiple_app_uid.dart
+
+
+7. ✧･ﾟ: *✧･ﾟ:* USAGE ✧･ﾟ: *✧･ﾟ:*
+
+✦ • • Application Usage Flow ✦ • •
+
+    This section describes the typical user flow and interaction patterns within the N2U mobile application.
+
+        ✧ App Launch & Session Handling
+
+            ⋆｡°✩ On app startup, the application checks for an existing user session using SharedPreferences.
+
+            ⋆｡°✩ If a valid authentication token exists and Remember Me was enabled, the user is automatically directed to the main member area.
+
+            ⋆｡°✩ If no valid session is found, the user is redirected to the login / sign-up screen.
+
+
+        ✧ Authentication Flow
+
+            ⋆｡°✩ Users may log in using their registered credentials.
+
+            ⋆｡°✩ Successful login stores session-related data locally to enable persistent login.
+
+            ⋆｡°✩ Logout clears stored session data and returns the user to the authentication screen.
+
+
+        ✧ Navigation Behavior
+
+            ⋆｡°✩ Navigation between screens is handled using Navigator.push, allowing pages to be stacked.
+
+            ⋆｡°✩ This preserves navigation history so the system back button navigates to the previous screen instead of closing the app.
+
+            ⋆｡°✩ Core pages such as Login, Profile, Wallet, Vouchers, and Settings are accessed through standard route navigation.
+
+
+        ✧ Back Button Behavior
+
+            ⋆｡°✩ The Android system back button pops the current route and returns the user to the previous page.
+
+            ⋆｡°✩ This ensures predictable navigation and prevents unintended app exits during normal usage.
+
+            ⋆｡°✩ The app exits only when the root screen is reached and no further routes remain in the navigation stack.
+
+
+        ✧ Member Features Usage
+
+            ⋆｡°✩ Once logged in, users can:
+
+            ⋆｡°✩ View and manage vouchers (active, used, expired)
+
+            ⋆｡°✩ Redeem vouchers using reward points
+
+            ⋆｡°✩ Copy voucher codes for checkout usage
+
+            ⋆｡°✩ View wallet balances and transaction history
+
+            ⋆｡°✩ Submit top-up and withdrawal requests
+
+            ⋆｡°✩ Track reward points and redemption history
+
+            ⋆｡°✩ View order history and voucher usage per order
+
+            ⋆｡°✩ Receive and manage system notifications
+
+
+        ✧ Localization Usage
+
+            ⋆｡°✩ The application supports multiple languages (English, Chinese, Malay).
+
+            ⋆｡°✩ Language preference is stored locally and restored on app restart.
+
+            ⋆｡°✩ All user-facing strings are localized using easy_localization and .tr().
+
+        ✧ Notification Usage
+
+            ⋆｡°✩ Notifications are received via OneSignal.
+
+            ⋆｡°✩ Notifications are persisted locally using SQLite for offline access.
+
+            ⋆｡°✩ Users can mark notifications as read or delete them.
+
+            ⋆｡°✩ Unread notification counts are reflected in the UI.
+
+    ✦ • • Notes ✦ • •
+
+        ⋆｡°✩ Network connectivity is required for API-based features.
+
+        ⋆｡°✩ Some actions (top-up, withdrawal) depend on backend approval before reflecting changes.
+
+        ⋆｡°✩ UI state updates are handled through a combination of setState, Provider, and local persistence.
+
+8. ✧･ﾟ: *✧･ﾟ:* API REFERENCE ✧･ﾟ: *✧･ﾟ:*
+
+
+    First time login: https://fnb-management.testflight4u.com/login
+    Others all: response at /api/login-tenant
+
+    ✦ • • For First time login ✦ • •
+
+        - POST /api/login-tenant
+
+    required field:
+    {
+        "uid": "", // e.g. n2u, stockpos...
+    }
+
+    response success {
+        "success": true
+        "staging_url": "",
+    }
+
+    ✦ • • LOGIN ✦ • •
+
+         - POST /api/login
+
+    required field:
+    {
+        "uid": "",
+        "password": "",
+    }
+
+    ✦ • • REGISTER ✦ • •
+
+        - POST /api/register
+
+    required field:
+    {
+        "name": "",
+        "dial_code": "",
+        "phone": "",  // numeric, unique
+        "password": "",
+    }
+
+    optional field:
+    {
+        "referral_code": ""
+    }
+
+    ✦ • • PROFILE ✦ • •
+
+        - GET /api/getCreditBalance
+        - GET /api/getCashBalance
+        - GET /api/getPointBalance
+
+    ✦ • • PROFILE DETAILS ✦ • •
+        - GET /api/profile-details
+        - POST /api/update-profile
+
+    ✦ • • REQUEST TOP UP / WITHDRAWAL ✦ • •
+
+        - POST /api/balance-top-up
+
+    required field:
+    {
+        "top_up_amount": 100.00
+    }
+
+        - POST /api/withdrawal
+
+    required field:
+    {
+        "withdraw_amount": 1.00
+    }
+
+    ✦ • • VOUCHER ✦ • •
+
+        - GET /api/get-voucher
+
+        - GET /api/get-my-voucher
+    [
+        {
+            "id": 51,
+            "user_id": 76,
+            "voucher_id": 13,
+            "code": "N2U7613FBV4",
+            "status": "active",
+            "remark": null,
+            "used_date": null,
+            "expired_at": "2026-01-15 23:59:59",
+            "deleted_at": null,
+            "created_at": "2026-01-11T18:12:54.000000Z",
+            "updated_at": "2026-01-11T18:12:54.000000Z",
+            "vouchers": {
+                "id": 13,
+                "voucher_sys_ids": "VD00000010",
+                "name": "10.10 promotion",
+                "campaign_period": "limited",
+                "campaign_period_start": "2025-10-10 00:00:00",
+                "campaign_period_end": "2025-10-17 23:59:59",
+                "branch": "\"[\\\"1\\\",\\\"2\\\"]\"",
+                "service_type": "All services",
+                "claim_method": null,
+                "tnc": "<p class=\"ql-align-center\"><strong>PROMOTION</strong></p><p class=\"ql-align-center\"><br></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>10% + 10% off </li></ol>",
+                "status": "active",
+                "visibility": null,
+                "usage_status": null,
+                "deleted_at": null,
+                "created_at": "2025-10-12T22:10:07.000000Z",
+                "updated_at": "2025-10-12T22:10:07.000000Z",
+                "voucher_image": "https://qcg-vn-staging.s3.ap-southeast-1.amazonaws.com/8/top-view-wide-selection-delicious-food-black-dishes-isolated-transparent-background-404298197.webp",
+                "voucher_claim": {
+                    "id": 13,
+                    "voucher_id": 13,
+                    "method_type": "Point to claim",
+                    "point": 100,
+                    "code_type": null,
+                    "voucher_code": null,
+                    "voucher_quantity": null,
+                    "active_rule_type": null,
+                    "tier": null,
+                    "event_type": null,
+                    "event_date": null,
+                    "purchase_amount": null,
+                    "claim_windown_start": "2025-10-10 00:00:00",
+                    "claim_windown_end": "2025-10-16 23:59:59",
+                    "claim_limit": "limited_claim",
+                    "voucher_amount": 1000,
+                    "voucher_claimed": 3,
+                    "voucher_usage": null,
+                    "renew_type": "never",
+                    "voucher_member_amount": 1,
+                    "renew_member_type": "never",
+                    "deleted_at": null,
+                    "created_at": "2025-10-12T22:10:07.000000Z",
+                    "updated_at": "2026-01-11T18:12:54.000000Z"
+                },
+                "voucher_criteria": {
+                    "id": 13,
+                    "voucher_id": 13,
+                    "validaty_value": 3,
+                    "validaty_type": "days_after_redemption",
+                    "requirement_type": "No requirement",
+                    "min_amount": null,
+                    "min_quantity": null,
+                    "valid_dt_type": "All-day",
+                    "specific_date": null,
+                    "specific_time_start": null,
+                    "specific_time_end": null,
+                    "eligible_member": "All member",
+                    "specific_segment": null,
+                    "eligible_product_type": "All product",
+                    "eligible_category": null,
+                    "eligible_product": null,
+                    "stacking_type": "Not stack",
+                    "deleted_at": null,
+                    "created_at": "2025-10-12T22:10:07.000000Z",
+                    "updated_at": "2025-10-12T22:10:07.000000Z"
+                },
+                "media": [
+                    {
+                        "id": 8,
+                        "model_type": "App\\Models\\Tenant\\Voucher",
+                        "model_id": 13,
+                        "uuid": "9c17cb44-52e1-4920-aacc-0a9dc9a451a7",
+                        "collection_name": "voucher_image",
+                        "name": "top-view-wide-selection-delicious-food-black-dishes-isolated-transparent-background-404298197",
+                        "file_name": "top-view-wide-selection-delicious-food-black-dishes-isolated-transparent-background-404298197.webp",
+                        "mime_type": "image/webp",
+                        "disk": "s3",
+                        "conversions_disk": "s3",
+                        "size": 50548,
+                        "manipulations": [],
+                        "custom_properties": [],
+                        "generated_conversions": [],
+                        "responsive_images": [],
+                        "order_column": 1,
+                        "created_at": "2025-10-12T22:10:07.000000Z",
+                        "updated_at": "2025-10-12T22:10:07.000000Z",
+                        "original_url": "https://qcg-vn-staging.s3.ap-southeast-1.amazonaws.com/8/top-view-wide-selection-delicious-food-black-dishes-isolated-transparent-background-404298197.webp",
+                        "preview_url": ""
+                    }
+                ]
+            }
+        }
+    ]
+
+        - POST /api/claim-voucher-code
+
+    required field:
+    {
+        "voucher_code": "ABC123",
+    }
+
+        - POST /api/redeem-voucher
+
+    required field:
+    {
+        "voucher_id": "VD00000012" e.g. selected voucher voucher_sys_ids
+    }
+
+    ✦ • • SUBSCRIPTIONS ✦ • •
+
+        - GET /api/get-subscription
+
+    ✦ • • WALLET TRANSACTION ✦ • •
+
+        - GET /api/get-wallet-transaction
+
+    ✦ • • ORDER HISTORY ✦ • •
+
+        - GET /api/get-order-histories
+
+    ✦ • • INVITE ✦ • •
+
+        - GET /api/get-invite-links
+
+    ✦ • • CHANGE PASSWORD ✦ • •
+
+        - POST /api/updatePassword
+
+        {
+            password : "",
+            password_confirmation : ""
+        }
+
+
+    ✦ • • NOTIFICATION ✦ • •
+
+        - GET /api/notifications
+
+        - POST /api/notifications/{id}/read
+        {id} get from /api/notification
+
+        - POST /api/notifications/read-all
+
+
+
+9. ✧･ﾟ: *✧･ﾟ:* TROUBLESHOOT ✧･ﾟ: *✧･ﾟ:*
+
+
+    ✧ App Closes When Pressing Back Button
+
+       Cause:
+
+        The current screen is the root route of the navigation stack.
+
+       Solution:
+
+        Ensure pages are navigated using Navigator.push instead of Navigator.pushReplacement when back navigation is required.
+
+        Verify that the home screen is not unintentionally replacing the route stack.
+
+
+
+    ✧ User Is Not Auto-Logged In
+
+       Cause:
+
+        Authentication token is missing, expired, or Remember Me was not enabled.
+
+        SharedPreferences data was cleared.
+
+       Solution:
+
+        Confirm that auth_token and remember_me values are saved after login.
+
+        Verify token validity before navigation.
+
+        Avoid clearing preferences unless explicitly logging out.
+
+
+    ✧ App Does Not Return to Home After Background Resume
+
+       Cause:
+
+        App lifecycle state is not being observed.
+
+       Solution:
+
+        Ensure WidgetsBindingObserver is implemented on the root page.
+
+        Handle AppLifecycleState.resumed to reset navigation state if required.
+
+
+
+    ✧ Localization Text Not Updating
+
+        Cause:
+
+          Missing translation key or .tr() not applied.
+
+          Language preference not saved.
+
+        Solution:
+
+          Confirm translation keys exist in en.json, ms.json, and zh.json.
+
+          Wrap user-visible strings with .tr().
+
+          Verify EasyLocalization initialization in main.dart.
+
+
+    ✧ Notification Not Appearing
+
+        Cause:
+
+          Notification permission not granted.
+
+          OneSignal not initialized correctly.
+
+        Solution:
+
+          Confirm notification permission is granted on the device.
+
+          Verify OneSignal App ID is correctly configured.
+
+          Check OneSignal login is triggered after user authentication.
+
+
+
+    ✧ Voucher List Is Empty
+
+        Cause:
+
+          No available vouchers or API returned an empty response.
+
+          Network connectivity issue.
+
+        Solution:
+
+          Confirm voucher availability from backend.
+
+          Check API response logs.
+
+          Ensure internet connection is active.
+
+
+    ✧ App Displays Wrong Language on Restart
+
+        Cause:
+
+          Saved language preference not loaded before app start.
+
+        Solution:
+
+          Ensure language is retrieved from SharedPreferences before calling runApp.
+
+          Use startLocale in EasyLocalization.
+
+
+    ✧ Debug Logs Not Appearing
+
+        Cause:
+
+          Release mode build suppresses logs.
+
+        Solution:
+
+          Use debug mode during development.
+
+          Replace print with debugPrint for better visibility.
+
+
+
+✦ • • General Tips ✦ • •
+
+Always test authentication flows with both Remember Me enabled and disabled.
+
+Clear app data if unexpected behavior persists.
+
+Use physical devices when testing notifications and background behavior.
+
+
+
+
+
+
+10. ✧･ﾟ: *✧･ﾟ:* TROUBLESHOOT ✧･ﾟ: *✧･ﾟ:*
+
+Problem: When pressing the back button on the phone, the app closes.
+Platform: Android / IOS
+Symptoms:
+  - App closes/exits completely when user presses back button
+  - Instead of returning to home screen, app terminates
+  - Back navigation doesn't work as expected in nested screens
+  - Users lose their place in the app flow
+Cause:
+  - Using Navigator.pushReplacement() instead of Navigator.push() throughout the app
+  - pushReplacement() removes previous screen from navigation stack
+  - No screens left in stack for back button to navigate to
+  - When stack is empty, OS defaults to closing the app
+Solution:
+  - Replace Navigator.pushReplacement() with Navigator.push() for detail screens, settings, profile pages, etc.
+  - Keep pushReplacement() ONLY for authentication flows (Login → Home, Logout → Login)
+  - Use IDE's Find & Replace to bulk update:
+
+   Find: Navigator.pushReplacement
+   Replace: Navigator.push
+   Review each occurrence before replacing
+
+  - Alternative: Use Navigator.pop() to explicitly go back to previous screen
+Notes:
+  - Test back button behavior on all screens after implementing fix
+  - Navigator.push() = Adds screen to stack (allows back navigation)
+  - Navigator.pushReplacement() = Replaces current screen (no back navigation)
+
+
+
+Problem:  Tutorial coach marks for first-time users not appearing.
+Platform:: Android / IOS
+Symptoms:
+    - No tutorial overlay appears after first login
+    - Coach marks don't highlight UI elements
+    - SharedPreferences check passes but tutorial skipped
+    - Widget keys properly assigned but not detected
+Cause:
+    - Tutorial triggered before UI is fully rendered
+    - GlobalKeys not attached to widgets yet when tutorialCoachMark?.show() called
+    - Insufficient delay for widget tree to build
+    - mounted check fails in async callbacks
+Solution:
+    - Add delay before checking tutorial status: Future.delayed(Duration(milliseconds: 800))
+    - Add another delay before showing tutorial: Future.delayed(Duration(milliseconds: 500))
+    - Always check mounted before calling setState or showing tutorial
+    - Ensure GlobalKeys are assigned in build method, not dynamically
+Notes:
+    - Total delay: 800ms + 500ms = 1300ms ensures UI is ready
+    - Always check mounted before async operations complete
+    - Test on slower devices (need longer delays)
+    - GlobalKeys must be final or late final in State class
+    - If tutorial still doesn't show, increase delays incrementally
+    - Debug with debugPrint() to track execution flow
+
+
+Problem:   Remember Me feature not persisting login sessions.
+Platform:: Android / IOS
+Symptoms:
+    - Users logged out after closing app
+    - "Remember Me" toggle checked but doesn't work
+    - Auto-login not triggered on app restart
+    - Credentials not saved despite successful login
+Cause:
+    - Credentials saved in SharedPreferences (insecure, cleared easily)
+    - Password stored in plain text
+    - No check for saved credentials in login screen initState()
+    - Auto-login logic not implemented properly
+    - Token cleared when app killed
+Solution:
+    - Use flutter_secure_storage for sensitive data (passwords)
+    - Save credentials securely when "Remember Me" is checked
+    - Check for saved credentials in initState() of login screen
+    - Auto-login if valid token + credentials found
+    - Clear credentials when "Remember Me" unchecked
+Notes:
+    - flutter_secure_storage uses Keychain (iOS) and KeyStore (Android)
+    - Never store passwords in SharedPreferences (insecure)
+    - Clear credentials on logout based on user choice
+    - Add delay before auto-login: Future.delayed(Duration(milliseconds: 500))
+    - Consider token refresh instead of storing password
+    - Comply with security best practices and regulations
+
+
+
+
+
+
+
+
+
+11. ✧･ﾟ: *✧･ﾟ:* DEVELOPER'S NOTES ✧･ﾟ: *✧･ﾟ:*
+
+
+Remember Me / Auto-Login
+
+    Storage: Use flutter_secure_storage for credentials (NOT SharedPreferences)
+
+    Save on login:
+
+        dart  await _secureStorage.write(key: 'remembered_uid', value: uid);
+        await _secureStorage.write(key: 'remembered_password', value: password);
+        await prefs.setBool('remember_me', true);
+
+    Check on app start: Load credentials in login initState(), auto-login after 500ms
+    Clear on logout: Based on user choice (Stay logged in? Yes/No)
+
+Tutorial Coach Marks (Profile)
+
+    Trigger: First login only (has_seen_profile_tutorial in SharedPreferences)
+
+    Timing:
+
+        800ms delay before check
+        500ms delay before showing
+
+
+    Targets: Wallet, Notifications, Subscription, Referral
+    GlobalKeys: Attach to widgets you want to highlight
+    Always check mounted before showing in async callbacks
+
+Profile Screen
+
+    Offline-first: Load cached data first, then fetch fresh
+    Cache location: SharedPreferences as cached_profile
+    Data cached: Name, profile image, balances, voucher count, last update time
+    Offline indicator: Show snackbar when using cached data
+    Refresh: Pull-to-refresh or manual sync button
+
+Login Flow
+
+        Login Screen
+            ↓
+    Check remember_me
+        ↓ (if true)
+    Load saved credentials → Auto-login
+        ↓
+    Navigate to Profile (pushReplacement)
+        ↓
+    Check has_seen_profile_tutorial
+        ↓ (if false)
+    Show tutorial coach marks → Mark as seen
+
+    AppBar Icon Colors
+
+    Problem: Leading/drawer icon not showing custom color
+    Solution: Add iconTheme: IconThemeData(color: primaryBlue) to AppBar
+    Controls: All AppBar icons (drawer, back button, action icons)
+
+Common Pitfalls
+
+    ❌ Don't use Navigator.pushReplacement() for detail screens
+    ❌ Don't store passwords in SharedPreferences (use secure storage)
+    ❌ Don't show tutorial immediately (needs delays for UI to render)
+    ❌ Don't forget mounted check in async callbacks
+    ❌ Don't skip offline caching (users need it!)
+
+
+API Endpoints
+
+    Login:          POST /api/login
+    Profile:        GET  /api/getProfile
+    Credit Balance: GET  /api/creditBalance
+    Cash Balance:   GET  /api/cashBalance
+    Point Balance:  GET  /api/pointBalance
+    Vouchers:       GET  /api/getMyVoucher
+    Key Files
+    /signup_login/log_in.dart       - Login + Remember Me
+    /profile/profile.dart           - Profile + Tutorial + Offline cache
+    /const/controller/auth_storage.dart - Token & session management
+
+Key Packages
+
+    flutter_secure_storage - Secure credential storage
+    shared_preferences - App settings, flags, cache
+    tutorial_coach_mark - First-time user tutorial
+    http - API calls
+    easy_localization - Multi-language support
+
+Testing Checklist
+
+    Back button works on all screens
+    Remember Me persists after app restart
+    Auto-login works when Remember Me enabled
+    Tutorial shows once on first login
+    Profile loads cached data when offline
+    AppBar icons show in primaryBlue color
+    Logout options work (Stay logged in? Yes/No)
+
+Security Notes
+
+    Credentials stored in secure storage (Keychain/KeyStore)
+    Token stored in SharedPreferences (consider moving to secure storage)
+    Clear credentials on full logout
+    Preserve credentials on session logout (if user chose "Yes")
+    Never log passwords or tokens in production
